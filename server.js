@@ -25,9 +25,12 @@ function writeData(data) {
   fs.writeFileSync('./data.json', JSON.stringify(data, null, 2));
 }
 
-// Генерация уникального id
+// Генерация id вида [буква][число], например: d259
 function generateId() {
-  return Date.now().toString() + Math.floor(Math.random() * 10);
+  const letters = 'abcdefghijklmnopqrstuvwxyz';
+  const randomLetter = letters[Math.floor(Math.random() * letters.length)];
+  const randomNum = Math.floor(Math.random() * 900) + 100; // число от 100 до 999
+  return `${randomLetter}${randomNum}`;
 }
 
 // GET /api/requests
@@ -91,5 +94,4 @@ app.delete('/api/requests/:id', (req, res) => {
 });
 
 // Запуск сервера
-app.listen(PORT, () => console.log(`Сервер запущен на порту ${PORT}`));
-
+app.listen(PORT, () => console.log(`Сервер запущ
