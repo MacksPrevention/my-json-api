@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
-const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,6 +25,11 @@ function writeData(data) {
   fs.writeFileSync('./data.json', JSON.stringify(data, null, 2));
 }
 
+// Генерация уникального id
+function generateId() {
+  return Date.now().toString() + Math.floor(Math.random() * 1000);
+}
+
 // GET /api/requests
 app.get('/api/requests', (req, res) => {
   const data = readData();
@@ -36,7 +40,7 @@ app.get('/api/requests', (req, res) => {
 app.post('/api/requests', (req, res) => {
   try {
     const data = readData();
-    const newRequest = { ...req.body, id: uuidv4() };
+    const newRequest = { ...req.body, id: generateId() };
     data.requests.push(newRequest);
     writeData(data);
     res.status(201).json(newRequest);
@@ -57,10 +61,8 @@ app.put('/api/requests/:id', (req, res) => {
       return res.status(404).json({ error: 'Заявка не найдена' });
     }
 
-    // Обновляем поля заявки
     data.requests[index] = { ...data.requests[index], ...req.body, id };
     writeData(data);
-
     res.json({ message: 'Заявка обновлена', updated: data.requests[index] });
   } catch (err) {
     console.error('Ошибка при обновлении заявки:', err);
@@ -68,7 +70,7 @@ app.put('/api/requests/:id', (req, res) => {
   }
 });
 
-// DELETE /api/requests/:id
+// DELETE /api/requests/:id — удалить заявку
 app.delete('/api/requests/:id', (req, res) => {
   try {
     const { id } = req.params;
