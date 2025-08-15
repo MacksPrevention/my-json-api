@@ -6,8 +6,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
+app.use(express.json()); // для POST-запросов
 
-// Чтение JSON и отдача клиенту
 function getData() {
   try {
     const rawData = fs.readFileSync('./data.json', 'utf8');
@@ -18,16 +18,21 @@ function getData() {
   }
 }
 
-// Корневой маршрут
-app.get('/', (req, res) => {
-  res.json(getData());
+app.get('/', (req, res) => res.json(getData()));
+
+app.get('/api/requests', (req, res) => res.json(getData()));
+
+app.post('/api/requests', (req, res) => {
+  const newRequest = req.body;
+  try {
+    const data = JSON.parse(fs.readFileSync('./data.json', 'utf8'));
+    data.requests.push(newRequest);
+    fs.writeFileSync('./data.json', JSON.stringify(data, null, 2));
+    res.status(201).json(newRequest);
+  } catch (err) {
+    console.error('Ошибка при добавлении заявки:', err);
+    res.status(500).json({ error: 'Не удалось сохранить заявку' });
+  }
 });
 
-// API-эндпоинт
-app.get('/api/requests', (req, res) => {
-  res.json(getData());
-});
-
-app.listen(PORT, () => {
-  console.log(`Сервер запущен на порту ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Сервер запущен на порту ${PORT}`));
