@@ -27,7 +27,7 @@ function writeData(data) {
 
 // Генерация уникального id
 function generateId() {
-  return Date.now().toString() + Math.floor(Math.random() * 1000);
+  return Date.now().toString() + Math.floor(Math.random() * 10);
 }
 
 // GET /api/requests
@@ -92,3 +92,4 @@ app.delete('/api/requests/:id', (req, res) => {
 
 // Запуск сервера
 app.listen(PORT, () => console.log(`Сервер запущен на порту ${PORT}`));
+
