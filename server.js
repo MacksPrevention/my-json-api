@@ -93,5 +93,7 @@ app.delete('/api/requests/:id', (req, res) => {
   }
 });
 
-// Запуск сервера
-app.listen(PORT, () => console.log(`Сервер запущ
+app.listen(PORT, () => {
+  console.log(`Сервер запущен на порту ${PORT}`);
+});
+
